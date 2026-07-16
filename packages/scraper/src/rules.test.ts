@@ -51,6 +51,8 @@ describe("extractTags", () => {
       "This position does not sponsor visas.",
       "Visa sponsorship is not available for this role.",
       "We do not offer visa sponsorship.",
+      "We don’t sponsor visas.",
+      "This role doesn’t offer visa sponsorship.",
     ]) {
       const tags = extractTags(raw({ descriptionText: d }));
       expect(tags, d).toContain("no-sponsorship");
