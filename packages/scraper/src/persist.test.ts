@@ -65,6 +65,18 @@ describe("upsertListings", () => {
     expect(co).toHaveLength(1);
     expect(co[0]!.atsType).toBe("github_list");
   });
+
+  it("skips ATS-sourced listings for unknown companies instead of mislabeling them", async () => {
+    const db = await createTestDb();
+    const result = await upsertListings(
+      db,
+      [raw({ source: "greenhouse", externalId: "gh-x", companyName: "Ghost Co", companySlug: "ghost-co" })],
+      { knownSlugs: new Set() },
+    );
+    expect(result).toEqual({ kept: 0, skipped: 1 });
+    const co = await db.select().from(companies).where(eq(companies.slug, "ghost-co"));
+    expect(co).toHaveLength(0);
+  });
 });
 
 describe("crossSourceDedupe", () => {

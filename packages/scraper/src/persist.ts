@@ -58,7 +58,16 @@ export async function upsertListings(
     const raw = parsed.data;
     let companyId = companyIds.get(raw.companySlug);
     if (companyId == null) {
-      companyId = await ensureCompany(db, raw);
+      const existing = await db.select({ id: companies.id }).from(companies)
+        .where(eq(companies.slug, raw.companySlug));
+      if (existing[0]) {
+        companyId = existing[0].id;
+      } else if (raw.source === "github_list") {
+        companyId = await ensureCompany(db, raw);
+      } else {
+        skipped++;
+        continue;
+      }
       companyIds.set(raw.companySlug, companyId);
     }
     const tags = extractTags(raw);
