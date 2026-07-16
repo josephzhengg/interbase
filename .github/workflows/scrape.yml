@@ -1,0 +1,37 @@
+name: scrape
+on:
+  schedule:
+    - cron: "0 11 * * *"
+    - cron: "0 23 * * *"
+  workflow_dispatch: {}
+concurrency:
+  group: scrape
+  cancel-in-progress: false
+jobs:
+  scrape:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - name: Migrate database
+        run: pnpm -F @interbase/db migrate
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+      - name: Scrape
+        run: pnpm -F @interbase/scraper scrape
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          SIMPLIFY_REPO: SimplifyJobs/Summer2027-Internships
+      - name: Send digests
+        run: pnpm -F @interbase/scraper digest
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
+          FROM_EMAIL: ${{ secrets.FROM_EMAIL }}
+          BASE_URL: ${{ secrets.BASE_URL }}
