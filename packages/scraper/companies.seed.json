@@ -1,0 +1,14 @@
+[
+  { "name": "Stripe", "slug": "stripe", "website": "https://stripe.com", "atsType": "greenhouse", "atsToken": "stripe" },
+  { "name": "Databricks", "slug": "databricks", "website": "https://databricks.com", "atsType": "greenhouse", "atsToken": "databricks" },
+  { "name": "Figma", "slug": "figma", "website": "https://figma.com", "atsType": "greenhouse", "atsToken": "figma" },
+  { "name": "Duolingo", "slug": "duolingo", "website": "https://duolingo.com", "atsType": "greenhouse", "atsToken": "duolingo" },
+  { "name": "Robinhood", "slug": "robinhood", "website": "https://robinhood.com", "atsType": "greenhouse", "atsToken": "robinhood" },
+  { "name": "Datadog", "slug": "datadog", "website": "https://datadoghq.com", "atsType": "greenhouse", "atsToken": "datadog" },
+  { "name": "Cloudflare", "slug": "cloudflare", "website": "https://cloudflare.com", "atsType": "greenhouse", "atsToken": "cloudflare" },
+  { "name": "Plaid", "slug": "plaid", "website": "https://plaid.com", "atsType": "lever", "atsToken": "plaid" },
+  { "name": "Palantir", "slug": "palantir", "website": "https://palantir.com", "atsType": "lever", "atsToken": "palantir" },
+  { "name": "Notion", "slug": "notion", "website": "https://notion.so", "atsType": "ashby", "atsToken": "notion" },
+  { "name": "Linear", "slug": "linear", "website": "https://linear.app", "atsType": "ashby", "atsToken": "linear" },
+  { "name": "Ramp", "slug": "ramp", "website": "https://ramp.com", "atsType": "ashby", "atsToken": "ramp" }
+]
