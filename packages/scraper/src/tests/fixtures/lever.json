@@ -1,0 +1,21 @@
+[
+  {
+    "id": "a1b2c3",
+    "text": "Backend Engineering Intern (Summer 2027)",
+    "hostedUrl": "https://jobs.lever.co/plaid/a1b2c3?lever-source=feed",
+    "createdAt": 1784100000000,
+    "categories": { "location": "New York, NY", "commitment": "Intern" },
+    "workplaceType": "hybrid",
+    "descriptionPlain": "Work on our data pipelines. Hourly stipend provided.",
+    "salaryRange": { "min": 40, "max": 55, "currency": "USD", "interval": "per-hour-wage" }
+  },
+  {
+    "id": "d4e5f6",
+    "text": "Machine Learning Engineer, New Grad",
+    "hostedUrl": "https://jobs.lever.co/plaid/d4e5f6",
+    "createdAt": 1784000000000,
+    "categories": { "location": "Remote - US" },
+    "workplaceType": "remote",
+    "descriptionPlain": "Entry-level ML role."
+  }
+]
