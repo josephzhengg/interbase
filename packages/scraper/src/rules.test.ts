@@ -23,6 +23,8 @@ describe("isEntryLevel", () => {
     ["Engineering Manager, Internal Tools", false],
     ["Internal Communications Coordinator", false], // "Internal" must NOT match \bintern\b
     ["Software Engineer", false], // no entry-level signal at all
+    ["Senior Software Engineering Intern", false],
+    ["Staff Intern Program Manager", false],
   ])("%s → %s", (title, expected) => {
     expect(isEntryLevel(title)).toBe(expected);
   });
@@ -42,6 +44,20 @@ describe("extractTags", () => {
     expect(extractTags(raw({ descriptionText: "We sponsor visas and support CPT/OPT." }))).toContain("sponsors-visa");
     expect(extractTags(raw({ sponsorship: "yes" }))).toContain("sponsors-visa");
     expect(extractTags(raw({ sponsorship: "no" }))).toContain("no-sponsorship");
+  });
+  it("catches common negative-sponsorship phrasings", () => {
+    for (const d of [
+      "We do not sponsor employment visas.",
+      "This position does not sponsor visas.",
+      "Visa sponsorship is not available for this role.",
+      "We do not offer visa sponsorship.",
+    ]) {
+      const tags = extractTags(raw({ descriptionText: d }));
+      expect(tags, d).toContain("no-sponsorship");
+      expect(tags, d).not.toContain("sponsors-visa");
+    }
+    // word boundary: "casino" must not trigger the "no" branch
+    expect(extractTags(raw({ descriptionText: "Our casino sponsor is great." }))).toContain("sponsors-visa");
   });
   it("new-grad-ok and freshman-ok", () => {
     expect(extractTags(raw({ title: "New Grad Software Engineer" }))).toContain("new-grad-ok");

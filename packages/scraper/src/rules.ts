@@ -9,7 +9,7 @@ export function isEntryLevel(title: string): boolean {
 }
 
 const PAID_RE = /\$\s?\d|\/(hour|hr)\b|hourly|stipend/i;
-const NO_SPONSOR_RE = /(unable|not able|cannot|will not|no)\s+(?:\w+\s+){0,3}sponsor/i;
+const NO_SPONSOR_RE = /\b(?:unable|not|cannot|can['']t|won['']t|no|never|don['']t|doesn['']t)\s+(?:\w+\s+){0,3}sponsor|\bsponsor\w*\s+(?:\w+\s+){0,3}(?:not\b|unavailable)/i;
 const SPONSOR_RE = /sponsor(ship)?|\bCPT\b|\bOPT\b/i;
 const FRESHMAN_RE = /freshman|sophomore|all years|underclassmen|first[- ]year students/i;
 
