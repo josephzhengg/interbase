@@ -1,0 +1,25 @@
+{
+  "jobs": [
+    {
+      "id": "9f1c2e34-0000-4000-8000-000000000001",
+      "title": "Software Engineer Intern (Summer 2027)",
+      "location": "New York",
+      "secondaryLocations": [{ "location": "San Francisco" }],
+      "isRemote": false,
+      "publishedAt": "2026-07-14T13:00:00.000Z",
+      "jobUrl": "https://jobs.ashbyhq.com/ramp/9f1c2e34-0000-4000-8000-000000000001",
+      "applyUrl": "https://jobs.ashbyhq.com/ramp/9f1c2e34-0000-4000-8000-000000000001/application",
+      "descriptionHtml": "<p>Build internal tools. Open to freshman and sophomore students.</p>",
+      "compensation": { "compensationTierSummary": "$50–$60 / hr" }
+    },
+    {
+      "id": "9f1c2e34-0000-4000-8000-000000000002",
+      "title": "Staff Product Designer",
+      "location": "Remote",
+      "isRemote": true,
+      "publishedAt": "2026-07-10T13:00:00.000Z",
+      "jobUrl": "https://jobs.ashbyhq.com/ramp/9f1c2e34-0000-4000-8000-000000000002",
+      "descriptionHtml": "<p>Lead design.</p>"
+    }
+  ]
+}
