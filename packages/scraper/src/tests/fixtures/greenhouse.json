@@ -1,0 +1,20 @@
+{
+  "jobs": [
+    {
+      "id": 4011001,
+      "title": "Software Engineering Intern, Summer 2027",
+      "absolute_url": "https://boards.greenhouse.io/stripe/jobs/4011001?gh_src=feed",
+      "updated_at": "2026-07-14T09:00:00-04:00",
+      "location": { "name": "San Francisco, CA" },
+      "content": "&lt;p&gt;Join us! Pay: $50/hour. We sponsor visas.&lt;/p&gt;"
+    },
+    {
+      "id": 4011002,
+      "title": "Senior Software Engineer, Payments",
+      "absolute_url": "https://boards.greenhouse.io/stripe/jobs/4011002",
+      "updated_at": "2026-07-13T09:00:00-04:00",
+      "location": { "name": "Remote, US" },
+      "content": "&lt;p&gt;Lead our payments team.&lt;/p&gt;"
+    }
+  ]
+}
