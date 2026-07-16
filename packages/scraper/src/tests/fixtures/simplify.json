@@ -1,0 +1,41 @@
+[
+  {
+    "id": "sim-0001",
+    "source": "Simplify",
+    "company_name": "Chime",
+    "title": "Software Engineer Intern",
+    "locations": ["San Francisco, CA"],
+    "terms": ["Summer 2027"],
+    "sponsorship": "Offers Sponsorship",
+    "active": true,
+    "is_visible": true,
+    "url": "https://boards.greenhouse.io/chime/jobs/999?utm_source=Simplify",
+    "date_posted": 1784100000
+  },
+  {
+    "id": "sim-0002",
+    "source": "Simplify",
+    "company_name": "Vanta",
+    "title": "Security Engineer Intern",
+    "locations": ["Remote in USA"],
+    "terms": ["Summer 2027"],
+    "sponsorship": "Does Not Offer Sponsorship",
+    "active": true,
+    "is_visible": true,
+    "url": "https://jobs.lever.co/vanta/abc123",
+    "date_posted": 1784000000
+  },
+  {
+    "id": "sim-0003",
+    "source": "Simplify",
+    "company_name": "DeadCo",
+    "title": "SWE Intern",
+    "locations": [],
+    "terms": [],
+    "sponsorship": "Other",
+    "active": false,
+    "is_visible": true,
+    "url": "https://example.com/gone",
+    "date_posted": 1780000000
+  }
+]
