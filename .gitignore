@@ -5,3 +5,6 @@ node_modules/
 dist/
 .superpowers/
 .DS_Store
+.data/
+playwright-report/
+test-results/
