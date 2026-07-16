@@ -42,6 +42,9 @@ importers:
       '@interbase/db':
         specifier: workspace:*
         version: link:../db
+      drizzle-orm:
+        specifier: ^0.36.4
+        version: 0.36.4(@electric-sql/pglite@0.2.17)(@neondatabase/serverless@0.10.4)(@types/pg@8.11.6)
       zod:
         specifier: ^3.23.8
         version: 3.25.76
