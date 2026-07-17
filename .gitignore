@@ -8,3 +8,5 @@ dist/
 .data/
 playwright-report/
 test-results/
+*.tsbuildinfo
+next-env.d.ts
