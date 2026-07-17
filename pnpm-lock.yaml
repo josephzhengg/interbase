@@ -17,6 +17,9 @@ importers:
       '@interbase/db':
         specifier: workspace:*
         version: link:../../packages/db
+      drizzle-orm:
+        specifier: ^0.36.4
+        version: 0.36.4(@electric-sql/pglite@0.2.17)(@neondatabase/serverless@0.10.4)(@types/pg@8.11.6)(@types/react@19.2.17)(react@19.0.0)
       next:
         specifier: 15.1.6
         version: 15.1.6(@playwright/test@1.61.1)(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
