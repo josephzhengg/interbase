@@ -27,7 +27,7 @@ jobs:
         run: pnpm -F @interbase/scraper scrape
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
-          SIMPLIFY_REPO: SimplifyJobs/Summer2027-Internships
+          SIMPLIFY_REPO: SimplifyJobs/Summer2026-Internships
       - name: Send digests
         run: pnpm -F @interbase/scraper digest
         env:

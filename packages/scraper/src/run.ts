@@ -27,7 +27,7 @@ export async function runScrape(
   const seed = opts.seed ?? loadSeed();
   const fetchFn = opts.fetchFn ?? fetch;
   const now = opts.now ?? new Date();
-  const repo = opts.simplifyRepo ?? process.env.SIMPLIFY_REPO ?? "SimplifyJobs/Summer2027-Internships";
+  const repo = opts.simplifyRepo ?? process.env.SIMPLIFY_REPO ?? "SimplifyJobs/Summer2026-Internships";
   const errors: string[] = [];
   const raws: RawListing[] = [];
 
