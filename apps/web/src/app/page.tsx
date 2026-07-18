@@ -1,6 +1,12 @@
+import { Suspense } from "react";
+import Link from "next/link";
 import { getDb } from "@/lib/db";
-import { getFeed, getListingById, type FeedFilters, type FeedListing } from "@/lib/queries";
+import {
+  getFeed, getListingById, getSeasons, PAGE_SIZE, type FeedFilters, type FeedListing,
+} from "@/lib/queries";
 import { FeedShell, type FeedListingDTO } from "@/components/FeedShell";
+import { FilterChips } from "@/components/FilterChips";
+import { withPage } from "@/lib/urlstate";
 
 export const dynamic = "force-dynamic";
 
@@ -29,11 +35,32 @@ export default async function Home({ searchParams }: { searchParams: Promise<Sea
   const sp = await searchParams;
   const { sel, ...filters } = parseFilters(sp);
   const db = getDb();
-  const rows = await getFeed(db, filters);
+  const [rows, seasons] = await Promise.all([getFeed(db, filters), getSeasons(db)]);
   let dtos = rows.map(toDto);
   if (sel && !dtos.some((d) => d.id === sel)) {
     const extra = await getListingById(db, sel);
     if (extra) dtos = [toDto(extra), ...dtos];
   }
-  return <FeedShell listings={dtos} initialSelectedId={sel} />;
+  const currentSearch = new URLSearchParams(
+    Object.entries(sp).filter(([, v]) => typeof v === "string") as [string, string][],
+  ).toString();
+  return (
+    <div>
+      <Suspense fallback={null}>
+        <FilterChips seasons={seasons} />
+      </Suspense>
+      <FeedShell listings={dtos} initialSelectedId={sel} />
+      {rows.length >= PAGE_SIZE * (filters.page ?? 1) && (
+        <div className="mt-6 text-center">
+          <Link
+            href={withPage(currentSearch, (filters.page ?? 1) + 1)}
+            scroll={false}
+            className="text-sm font-medium text-accent hover:underline"
+          >
+            Load more
+          </Link>
+        </div>
+      )}
+    </div>
+  );
 }
