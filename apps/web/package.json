@@ -13,7 +13,7 @@
   "dependencies": {
     "@interbase/db": "workspace:*",
     "drizzle-orm": "^0.36.4",
-    "next": "15.1.6",
+    "next": "15.5.20",
     "react": "19.0.0",
     "react-dom": "19.0.0",
     "zod": "^3.23.8"
