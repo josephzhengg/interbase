@@ -16,7 +16,7 @@ describe("GET /api/listings", () => {
       externalId: "1", postedAt: new Date(), isActive: false,
     }).returning();
     setDb(db);
-    const res = await GET(new Request(`http://test/api/listings?ids=${row!.id},abc,-5,999999`));
+    const res = await GET(new Request(`http://test/api/listings?ids=${row!.id},abc,-5,999999,99999999999`));
     const body = (await res.json()) as { listings: { id: number; isActive: boolean }[] };
     expect(body.listings).toHaveLength(1);
     expect(body.listings[0]).toMatchObject({ id: row!.id, isActive: false });
