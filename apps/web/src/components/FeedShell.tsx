@@ -42,6 +42,8 @@ export function FeedShell({
         e.preventDefault();
         setSelectedId((c) => nextId(ids, c, -1));
       } else if (e.key === "Enter" && selected) {
+        // Let focused buttons/links activate natively instead of double-firing.
+        if (t instanceof HTMLButtonElement || t instanceof HTMLAnchorElement) return;
         window.open(selected.applyUrl, "_blank", "noopener");
       } else if (e.key === "s" && selected) {
         toggleEntry("saved", selected.id);
