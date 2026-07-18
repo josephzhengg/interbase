@@ -1,7 +1,7 @@
 "use client";
 
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { applyFilter } from "@/lib/urlstate";
 
 function Chip({ active, onClick, children }: {
@@ -23,8 +23,20 @@ function DebouncedInput({ initial, placeholder, onCommit, className }: {
 }) {
   const [value, setValue] = useState(initial);
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const ref = useRef<HTMLInputElement>(null);
+
+  // Keep in sync with URL-driven changes (back/forward) unless the user is mid-edit.
+  useEffect(() => {
+    if (document.activeElement !== ref.current) setValue(initial);
+  }, [initial]);
+
+  useEffect(() => () => {
+    if (timer.current) clearTimeout(timer.current);
+  }, []);
+
   return (
     <input
+      ref={ref}
       value={value}
       placeholder={placeholder}
       className={className}
