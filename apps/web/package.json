@@ -11,6 +11,7 @@
     "e2e": "playwright test"
   },
   "dependencies": {
+    "@electric-sql/pglite": "^0.2.15",
     "@interbase/db": "workspace:*",
     "drizzle-orm": "^0.36.4",
     "next": "15.5.20",
