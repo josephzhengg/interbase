@@ -1,0 +1,1 @@
+ALTER TABLE "subscribers" ADD COLUMN "last_confirmation_sent_at" timestamp with time zone;

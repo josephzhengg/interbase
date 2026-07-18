@@ -23,9 +23,9 @@ export async function fetchLever(
   const res = await fetchFn(`https://api.lever.co/v0/postings/${company.atsToken}?mode=json`);
   if (!res.ok) throw new Error(`lever ${company.slug}: HTTP ${res.status}`);
   const postings = leverResponse.parse(await res.json());
-  return postings.map((p) => {
+  return postings.flatMap((p) => {
     const location = p.categories?.location ?? "";
-    return rawListingSchema.parse({
+    const candidate = rawListingSchema.safeParse({
       source: "lever",
       externalId: p.id,
       companyName: company.name,
@@ -38,5 +38,6 @@ export async function fetchLever(
       hasCompensationData: p.salaryRange != null,
       postedAt: p.createdAt ? new Date(p.createdAt) : null,
     });
+    return candidate.success ? [candidate.data] : [];
   });
 }

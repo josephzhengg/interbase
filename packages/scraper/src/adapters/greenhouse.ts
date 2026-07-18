@@ -24,8 +24,8 @@ export async function fetchGreenhouse(
   );
   if (!res.ok) throw new Error(`greenhouse ${company.slug}: HTTP ${res.status}`);
   const data = ghResponse.parse(await res.json());
-  return data.jobs.map((j) =>
-    rawListingSchema.parse({
+  return data.jobs.flatMap((j) => {
+    const candidate = rawListingSchema.safeParse({
       source: "greenhouse",
       externalId: String(j.id),
       companyName: company.name,
@@ -37,6 +37,7 @@ export async function fetchGreenhouse(
       descriptionText: htmlToText(j.content ?? ""),
       hasCompensationData: false,
       postedAt: j.updated_at ? new Date(j.updated_at) : null,
-    }),
-  );
+    });
+    return candidate.success ? [candidate.data] : [];
+  });
 }

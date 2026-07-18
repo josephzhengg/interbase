@@ -11,21 +11,31 @@ const bodySchema = z.object({
   frequency: z.enum(["daily", "weekly"]).default("daily"),
 });
 
+const COOLDOWN_MS = 10 * 60 * 1000;
+
 export async function POST(req: Request) {
   const parsed = bodySchema.safeParse(await req.json().catch(() => null));
   if (!parsed.success) return NextResponse.json({ error: "Enter a valid email address." }, { status: 400 });
-  const { email, frequency } = parsed.data;
+  const email = parsed.data.email.trim().toLowerCase();
+  const { frequency } = parsed.data;
   const db = getDb();
   const [existing] = await db.select().from(subscribers).where(eq(subscribers.email, email));
   if (existing?.confirmedAt) return NextResponse.json({ status: "already-subscribed" });
+  const now = new Date();
   let confirmToken: string;
   if (existing) {
     confirmToken = existing.confirmToken;
-    await db.update(subscribers).set({ frequency }).where(eq(subscribers.id, existing.id));
+    const throttled =
+      existing.lastConfirmationSentAt != null &&
+      now.getTime() - existing.lastConfirmationSentAt.getTime() < COOLDOWN_MS;
+    await db.update(subscribers)
+      .set(throttled ? { frequency } : { frequency, lastConfirmationSentAt: now })
+      .where(eq(subscribers.id, existing.id));
+    if (throttled) return NextResponse.json({ status: "confirmation-sent" });
   } else {
     confirmToken = randomUUID();
     await db.insert(subscribers).values({
-      email, frequency, confirmToken, unsubscribeToken: randomUUID(),
+      email, frequency, confirmToken, unsubscribeToken: randomUUID(), lastConfirmationSentAt: now,
     });
   }
   const baseUrl = process.env.BASE_URL ?? "http://localhost:3000";

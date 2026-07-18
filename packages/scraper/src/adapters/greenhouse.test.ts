@@ -28,4 +28,15 @@ describe("fetchGreenhouse", () => {
   it("throws on non-OK responses", async () => {
     await expect(fetchGreenhouse(company, stubFetch({}, 404))).rejects.toThrow(/404/);
   });
+
+  it("drops jobs with non-http apply urls instead of failing the source", async () => {
+    const body = {
+      jobs: [
+        { id: 1, title: "SWE Intern", absolute_url: "javascript:alert(1)", location: { name: "NYC" }, content: "" },
+        { id: 2, title: "Data Intern", absolute_url: "https://boards.greenhouse.io/x/jobs/2", location: { name: "NYC" }, content: "" },
+      ],
+    };
+    const raws = await fetchGreenhouse(company, stubFetch(body));
+    expect(raws.map((r) => r.externalId)).toEqual(["2"]);
+  });
 });

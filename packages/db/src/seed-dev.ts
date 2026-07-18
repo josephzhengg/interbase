@@ -1,3 +1,4 @@
+import { mkdirSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { PGlite } from "@electric-sql/pglite";
 import { drizzle } from "drizzle-orm/pglite";
@@ -10,7 +11,9 @@ if (!url.startsWith("pglite://")) {
   console.error("seed:dev only supports pglite:// DATABASE_URLs (never seed a real database)");
   process.exit(1);
 }
-const db = drizzle(new PGlite(url.slice("pglite://".length)), { schema });
+const dir = url.slice("pglite://".length);
+mkdirSync(dir, { recursive: true });
+const db = drizzle(new PGlite(dir), { schema });
 await migrate(db, { migrationsFolder: fileURLToPath(new URL("../drizzle", import.meta.url)) });
 
 const hoursAgo = (h: number) => new Date(Date.now() - h * 3_600_000);

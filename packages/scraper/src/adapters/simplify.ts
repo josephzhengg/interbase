@@ -32,8 +32,8 @@ export async function fetchSimplify(
   const entries = simplifyResponse.parse(await res.json());
   return entries
     .filter((e) => e.active && e.is_visible)
-    .map((e) =>
-      rawListingSchema.parse({
+    .flatMap((e) => {
+      const candidate = rawListingSchema.safeParse({
         source: "github_list",
         externalId: e.id,
         companyName: e.company_name,
@@ -47,6 +47,7 @@ export async function fetchSimplify(
         sponsorship: mapSponsorship(e.sponsorship),
         season: e.terms[0] ?? null,
         postedAt: e.date_posted ? new Date(e.date_posted * 1000) : null,
-      }),
-    );
+      });
+      return candidate.success ? [candidate.data] : [];
+    });
 }

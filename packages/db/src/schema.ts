@@ -61,5 +61,6 @@ export const subscribers = pgTable("subscribers", {
   confirmedAt: timestamp("confirmed_at", { withTimezone: true }),
   unsubscribeToken: text("unsubscribe_token").notNull(),
   lastDigestSentAt: timestamp("last_digest_sent_at", { withTimezone: true }),
+  lastConfirmationSentAt: timestamp("last_confirmation_sent_at", { withTimezone: true }),
   createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
 });

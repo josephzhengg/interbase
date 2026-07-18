@@ -68,4 +68,27 @@ describe("subscribe flow", () => {
     expect(res.headers.get("location")).toBe("http://test.local/?unsubscribed=1");
     expect(await db.select().from(subscribers)).toHaveLength(0);
   });
+
+  it("normalizes email case to one subscriber", async () => {
+    await post({ email: "Foo@Bar.edu" });
+    const rows = await db.select().from(subscribers);
+    expect(rows).toHaveLength(1);
+    expect(rows[0]!.email).toBe("foo@bar.edu");
+    await db.update(subscribers).set({ confirmedAt: new Date() }).where(eq(subscribers.id, rows[0]!.id));
+    const res = await post({ email: "foo@BAR.edu" });
+    expect(((await res.json()) as { status: string }).status).toBe("already-subscribed");
+  });
+
+  it("throttles repeat confirmation emails within the cooldown, resends after with the same token", async () => {
+    await post({ email: "a@b.edu" });
+    expect(mockSend).toHaveBeenCalledTimes(1);
+    const res = await post({ email: "a@b.edu" });
+    expect(((await res.json()) as { status: string }).status).toBe("confirmation-sent");
+    expect(mockSend).toHaveBeenCalledTimes(1);
+    await db.update(subscribers).set({ lastConfirmationSentAt: new Date(Date.now() - 11 * 60 * 1000) });
+    const [before] = await db.select().from(subscribers);
+    await post({ email: "a@b.edu" });
+    expect(mockSend).toHaveBeenCalledTimes(2);
+    expect(mockSend.mock.calls[1]![0].html).toContain(before!.confirmToken);
+  });
 });

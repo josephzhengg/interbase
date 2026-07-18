@@ -29,10 +29,10 @@ export async function fetchAshby(
   );
   if (!res.ok) throw new Error(`ashby ${company.slug}: HTTP ${res.status}`);
   const data = ashbyResponse.parse(await res.json());
-  return data.jobs.map((j) => {
+  return data.jobs.flatMap((j) => {
     const locations = [j.location, ...(j.secondaryLocations ?? []).map((l) => l.location)]
       .filter((l): l is string => !!l);
-    return rawListingSchema.parse({
+    const candidate = rawListingSchema.safeParse({
       source: "ashby",
       externalId: j.id,
       companyName: company.name,
@@ -45,5 +45,6 @@ export async function fetchAshby(
       hasCompensationData: j.compensation != null,
       postedAt: j.publishedAt ? new Date(j.publishedAt) : null,
     });
+    return candidate.success ? [candidate.data] : [];
   });
 }

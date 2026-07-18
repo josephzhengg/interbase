@@ -6,7 +6,7 @@ export const rawListingSchema = z.object({
   companyName: z.string().min(1),
   companySlug: z.string().min(1),
   title: z.string().min(1),
-  applyUrl: z.string().url(),
+  applyUrl: z.string().url().refine((u) => /^https?:\/\//i.test(u), "applyUrl must be http(s)"),
   locations: z.array(z.string()).default([]),
   isRemote: z.boolean().default(false),
   descriptionText: z.string().default(""),
@@ -20,7 +20,7 @@ export type RawListing = z.infer<typeof rawListingSchema>;
 export const seedCompanySchema = z.object({
   name: z.string().min(1),
   slug: z.string().min(1),
-  website: z.string().url().optional(),
+  website: z.string().url().refine((u) => /^https?:\/\//i.test(u), "website must be http(s)").optional(),
   atsType: z.enum(["greenhouse", "lever", "ashby"]),
   atsToken: z.string().min(1),
 });
