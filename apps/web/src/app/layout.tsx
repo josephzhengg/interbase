@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { SubscribeForm } from "@/components/SubscribeForm";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -29,7 +30,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         </header>
         <main className="mx-auto max-w-6xl px-4 py-6">{children}</main>
         <footer className="mt-12 border-t border-border bg-surface py-8">
-          <div className="mx-auto max-w-6xl px-4 text-sm text-muted">
+          <div className="mx-auto flex max-w-6xl flex-col gap-4 px-4 text-sm text-muted">
+            <SubscribeForm />
             <p>interbase — entry-level CS internships, updated daily. Apply links go to official company job boards.</p>
           </div>
         </footer>
