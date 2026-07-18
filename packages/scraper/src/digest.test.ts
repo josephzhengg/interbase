@@ -1,6 +1,7 @@
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import { createTestDb } from "@interbase/db/testing";
 import { companies, listings, subscribers, type Db } from "@interbase/db";
+import { eq } from "drizzle-orm";
 import { sendDigests } from "./digest";
 
 // Tuesday 2026-07-14 UTC
@@ -69,5 +70,36 @@ describe("sendDigests", () => {
     const { fetchFn } = capture();
     const muchLater = new Date("2026-08-01T12:00:00Z");
     expect(await sendDigests(db, { ...OPTS, fetchFn, now: muchLater })).toEqual({ sent: 0 });
+  });
+
+  it("escapes scraped HTML in email content", async () => {
+    const db = await createTestDb();
+    await seed(db);
+    await db.update(listings).set({ title: '</a><a href="http://evil.example">SWE' });
+    const { calls, fetchFn } = capture();
+    expect(await sendDigests(db, { ...OPTS, fetchFn, now: NOW })).toEqual({ sent: 1 });
+    const payload = JSON.parse(calls[0]!.body) as { html: string };
+    expect(payload.html).toContain("&lt;/a&gt;");
+    expect(payload.html).not.toContain('</a><a href="http://evil.example">');
+  });
+
+  it("isolates per-subscriber send failures and keeps going", async () => {
+    const db = await createTestDb();
+    await seed(db); // creates confirmed daily subscriber a@b.edu
+    await db.insert(subscribers).values({
+      email: "c@d.edu", frequency: "daily", confirmToken: "c2", unsubscribeToken: "u2", confirmedAt: NOW,
+    });
+    const errSpy = vi.spyOn(console, "error").mockImplementation(() => {});
+    const fetchFn = (async (_input: RequestInfo | URL, init?: RequestInit) => {
+      const body = String(init?.body ?? "");
+      if (body.includes("a@b.edu")) return new Response("{}", { status: 500 });
+      return new Response("{}", { status: 200 });
+    }) as unknown as typeof fetch;
+    expect(await sendDigests(db, { ...OPTS, fetchFn, now: NOW })).toEqual({ sent: 1 });
+    expect(errSpy).toHaveBeenCalledOnce();
+    errSpy.mockRestore();
+    const rows = await db.select().from(subscribers);
+    expect(rows.find((r) => r.email === "a@b.edu")!.lastDigestSentAt).toBeNull();
+    expect(rows.find((r) => r.email === "c@d.edu")!.lastDigestSentAt).not.toBeNull();
   });
 });

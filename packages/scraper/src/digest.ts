@@ -7,12 +7,21 @@ export interface DigestItem {
   title: string; companyName: string; locations: string[]; isRemote: boolean; applyUrl: string;
 }
 
+function escapeHtml(s: string): string {
+  return s
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
+}
+
 export function buildDigestHtml(
   items: DigestItem[],
   opts: { baseUrl: string; unsubscribeToken: string; label: string },
 ): string {
   const rows = items.map((l) =>
-    `<li style="margin-bottom:8px"><a href="${l.applyUrl}" style="font-weight:600;color:#4f46e5">${l.title}</a><br/><span style="color:#8b8f96;font-size:13px">${l.companyName} · ${l.isRemote ? "Remote" : l.locations[0] ?? "Location TBA"}</span></li>`,
+    `<li style="margin-bottom:8px"><a href="${escapeHtml(l.applyUrl)}" style="font-weight:600;color:#4f46e5">${escapeHtml(l.title)}</a><br/><span style="color:#8b8f96;font-size:13px">${escapeHtml(l.companyName)} · ${escapeHtml(l.isRemote ? "Remote" : l.locations[0] ?? "Location TBA")}</span></li>`,
   ).join("");
   return `<div style="font-family:-apple-system,'Segoe UI',sans-serif;color:#17181a">
 <h2 style="font-size:16px">New entry-level internships ${opts.label}</h2>
@@ -58,11 +67,16 @@ export async function sendDigests(
       .limit(50);
     if (items.length === 0) continue;
     const label = sub.frequency === "daily" ? "today" : "this week";
-    await sendResendEmail({
-      key: opts.resendKey, from: opts.fromEmail, to: sub.email, fetchFn,
-      subject: `${items.length} new entry-level internship${items.length === 1 ? "" : "s"} ${label}`,
-      html: buildDigestHtml(items, { baseUrl: opts.baseUrl, unsubscribeToken: sub.unsubscribeToken, label }),
-    });
+    try {
+      await sendResendEmail({
+        key: opts.resendKey, from: opts.fromEmail, to: sub.email, fetchFn,
+        subject: `${items.length} new entry-level internship${items.length === 1 ? "" : "s"} ${label}`,
+        html: buildDigestHtml(items, { baseUrl: opts.baseUrl, unsubscribeToken: sub.unsubscribeToken, label }),
+      });
+    } catch (e) {
+      console.error(`digest: failed to send to ${sub.email}: ${String(e)}`);
+      continue;
+    }
     await db.update(subscribers).set({ lastDigestSentAt: now }).where(eq(subscribers.id, sub.id));
     sent++;
   }
